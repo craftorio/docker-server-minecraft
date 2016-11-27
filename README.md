@@ -14,4 +14,4 @@ Get tool:
 
 Run the server:
     
-    $ mc-docker-run --image mcstyle/server:1.7.10-1614-57-1 --name myfynnyserver --data /srv/minecraft-server --port 25565  
+    $ mc-docker-run --image mcstyle/server:1.7.10-1614-57-1 --name myfunnyserver --data /srv/minecraft-server --port 25565  
