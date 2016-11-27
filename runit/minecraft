@@ -1,0 +1,114 @@
+#!/bin/bash
+#set -x
+
+stop_server() {
+   /bin/bash /home/minecraft/init/minecraft stop
+}
+
+trap 'stop_server' SIGTERM SIGKILL
+
+chown -R minecraft:minecraft /home/minecraft
+
+MC_INIT_CONFIG=$(cat /home/minecraft/init/config)
+
+if [[ ! -z ${BACKBLAZE_ACCOUNT_ID} ]] && [[ ! -z ${BACKBLAZE_APP_KEY} ]] && [[ ! -z ${BACKBLAZE_BUCKET} ]]; then
+    export MC_INIT_BACKUPFORMAT='backblaze'
+
+    BACKBLAZE_ACCOUNT_ID_ESCAPED=`echo "$BACKBLAZE_ACCOUNT_ID" | sed -e 's/[\.\:\/&]/\\\\&/g'`
+    BACKBLAZE_APP_KEY_ESCAPED=`echo "$BACKBLAZE_APP_KEY" | sed -e 's/[\.\:\/&]/\\\\&/g'`
+
+    MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/BACKBLAZE_ACCOUNT_ID=.*/BACKBLAZE_ACCOUNT_ID='${BACKBLAZE_ACCOUNT_ID_ESCAPED}'/g")
+    MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/BACKBLAZE_APP_KEY=.*/BACKBLAZE_APP_KEY='${BACKBLAZE_APP_KEY_ESCAPED}'/g")
+    MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/BACKBLAZE_BUCKET=.*/BACKBLAZE_BUCKET='${BACKBLAZE_BUCKET}'/g")
+else
+    if [[ ! -z ${S3_ACCESS_KEY} ]] && [[ ! -z ${S3_SECRET_KEY} ]]  && [[ ! -z ${S3_REGION} ]] && [[ ! -z ${S3_BUCKET} ]]; then
+        export MC_INIT_BACKUPFORMAT='s3'
+
+        S3_ACCESS_KEY_ESCAPED=`echo "$S3_ACCESS_KEY" | sed -e 's/[\.\:\/&]/\\\\&/g'`
+        S3_SECRET_KEY_ESCAPED=`echo "$S3_SECRET_KEY" | sed -e 's/[\.\:\/&]/\\\\&/g'`
+
+        MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/S3_ACCESS_KEY=.*/S3_ACCESS_KEY='${S3_ACCESS_KEY_ESCAPED}'/g")
+        MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/S3_SECRET_KEY=.*/S3_SECRET_KEY='${S3_SECRET_KEY_ESCAPED}'/g")
+        MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/S3_REGION=.*/S3_REGION='${S3_REGION}'/g")
+        MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/S3_BUCKET=.*/S3_BUCKET='${S3_BUCKET}'/g")
+    else
+        export MC_INIT_BACKUPFORMAT='tar'
+    fi
+fi
+
+
+MC_INIT_CONFIG=$(echo "$MC_INIT_CONFIG" | sed -e "s/BACKUPFORMAT=.*/BACKUPFORMAT='${MC_INIT_BACKUPFORMAT}'/g")
+
+echo "$MC_INIT_CONFIG" > /home/minecraft/init/config
+
+if [[ ! -z ${BACKUP_INTERVAL} ]]; then
+    [[ 30 -lt ${BACKUP_INTERVAL} ]] || (echo "BACKUP_INTERVAL must be greater than 30" && exit 1)
+    BACKUP_INTERVAL=$(echo ${BACKUP_INTERVAL} | awk '{print int($1)}')
+    if [[ 60 -lt ${BACKUP_INTERVAL} ]]; then
+        echo "0 */$((${BACKUP_INTERVAL}/60)) * * * ps aux | grep '/home/minecraft/init/minecraft backup' | grep -v grep || /home/minecraft/init/minecraft backup" | crontab -
+    else
+        echo "*/${BACKUP_INTERVAL} * * * * ps aux | grep '/home/minecraft/init/minecraft backup' | grep -v grep || /home/minecraft/init/minecraft backup" | crontab -
+    fi
+fi
+
+crontab -l | { cat; echo "0 */6 * * * /home/minecraft/init/minecraft log-roll"; } | crontab -
+
+# Check first run
+if [[ 0 -eq $(ls -A /home/minecraft/server/config-server | wc -l) ]]; then
+    /bin/bash /home/minecraft/init/minecraft start
+
+    while [[ ! -f /home/minecraft/server/bukkit.yml ]] || [[ ! -f /home/minecraft/server/spigot.yml ]] || [[ ! -f /home/minecraft/server/cauldron.yml ]] || [[ ! -f /home/minecraft/server/thermos.yml ]] || [[ ! -f /home/minecraft/server/server.properties ]]
+    do
+        sleep 1
+    done
+
+    echo "Wait until world will be ready..."
+    sleep 30 # Wait world generation
+
+    /bin/bash /home/minecraft/init/minecraft stop
+    while /bin/bash /home/minecraft/init/minecraft status > /dev/null
+    do
+        sleep 2
+    done
+
+    mv /home/minecraft/server/bukkit.yml /home/minecraft/server/config-server/bukkit.yml
+    mv /home/minecraft/server/spigot.yml /home/minecraft/server/config-server/spigot.yml
+    mv /home/minecraft/server/cauldron.yml /home/minecraft/server/config-server/cauldron.yml
+    mv /home/minecraft/server/server.properties /home/minecraft/server/config-server/server.properties
+    mv /home/minecraft/server/thermos.yml /home/minecraft/server/config-server/thermos.yml
+    mv /home/minecraft/server/banned-players.json /home/minecraft/server/config-server/banned-players.json
+    mv /home/minecraft/server/banned-ips.json /home/minecraft/server/config-server/banned-ips.json
+    mv /home/minecraft/server/ops.json /home/minecraft/server/config-server/ops.json
+    mv /home/minecraft/server/whitelist.json /home/minecraft/server/config-server/whitelist.json
+fi
+
+ln -s -f /home/minecraft/server/config-server/spigot.yml /home/minecraft/server/spigot.yml
+ln -s -f /home/minecraft/server/config-server/bukkit.yml /home/minecraft/server/bukkit.yml
+ln -s -f /home/minecraft/server/config-server/cauldron.yml /home/minecraft/server/cauldron.yml
+ln -s -f /home/minecraft/server/config-server/server.properties /home/minecraft/server/server.properties
+ln -s -f /home/minecraft/server/config-server/thermos.yml /home/minecraft/server/thermos.yml
+ln -s -f /home/minecraft/server/config-server/banned-players.json /home/minecraft/server/banned-players.json
+ln -s -f /home/minecraft/server/config-server/banned-ips.json /home/minecraft/server/banned-ips.json
+ln -s -f /home/minecraft/server/config-server/ops.json /home/minecraft/server/ops.json
+ln -s -f /home/minecraft/server/config-server/whitelist.json /home/minecraft/server/whitelist.json
+
+LVLNAME=$(cat /home/minecraft/server/config-server/server.properties | grep level-name | awk '{split($0,a,"="); print a[2]}')
+
+[[ -z ${LVLNAME} ]] && echo "Level name is empty!" && exit 1
+
+if [[ -d /home/minecraft/server/worlds/${LVLNAME} ]]; then
+    [[ -d /home/minecraft/server/${LVLNAME} ]] && rm -rf /home/minecraft/server/${LVLNAME}
+else
+    [[ -d /home/minecraft/server/${LVLNAME} ]] && mv /home/minecraft/server/${LVLNAME} /home/minecraft/server/worlds/${LVLNAME} || mkdir -p /home/minecraft/server/worlds/${LVLNAME}
+fi
+
+ln -s -f /home/minecraft/server/worlds/${LVLNAME} /home/minecraft/server/${LVLNAME}
+
+/bin/bash /home/minecraft/init/minecraft start
+
+sleep 15
+
+while /bin/bash /home/minecraft/init/minecraft status > /dev/null
+do
+    sleep 15
+done
