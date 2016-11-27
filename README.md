@@ -9,7 +9,7 @@ Install docker:
 Get tool:
 
     $ sudo wget -O /usr/local/bin/mc-docker-run https://raw.githubusercontent.com/mcstyle/docker-server/master/mc-docker-run
-    $ chmod +x /usr/local/bin/mc-docker-run
+    $ sudo chmod +x /usr/local/bin/mc-docker-run
     $ exec $SHELL # reload shell
 
 Run the server:
