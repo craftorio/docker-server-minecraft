@@ -51,4 +51,6 @@ USER root
 
 VOLUME ["/home/minecraft/mcbackup", "/home/minecraft/server/dynmap", "/home/minecraft/server/worlds", "/home/minecraft/server/plugins", "/home/minecraft/server/mods", "/home/minecraft/server/config", "/home/minecraft/server/logs", "/home/minecraft/server/config-server"]
 
+# 25565 - MineCraft Server Port
+# 8123 - Dynmap Plugin Port
 EXPOSE 25565 8123
