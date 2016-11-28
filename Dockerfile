@@ -1,7 +1,7 @@
 FROM mcstyle/ubuntu
 ENV "MC_RELEASE_TAG=1.7.10"
 ENV "THERMOS_RELEASE_TAG=57"
-ENV "FORGE_RELEASE_TAG=1614"
+ENV "FORGE_RELEASE_TAG=1558"
 ENV "S3CMD_RELEASE_TAG=1.6.1"
 
 RUN adduser --disabled-password --gecos '' minecraft
