@@ -3,7 +3,7 @@
 SERVER_NAME="mcserver"
 SERVER_PORT="25565"
 BACKUP_INTERVAL="360" # Every 6 h
-MINECRAFT_AUTH_SERVER_URL="http://auth.minecraft.style"
+AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL-"http://localhost"}
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
@@ -14,33 +14,37 @@ while [[ $# > 1 ]]
 do
 key="$1"
 case ${key} in
+    -a|--auth-server-url)
+    AUTH_SERVER_URL="$2"
+    shift
+    ;;
     -d|--data)
     DATA_DIR="$2"
-    shift # past argument
+    shift
     ;;
     -n|--name)
     SERVER_NAME="$2"
-    shift # past argument
+    shift
     ;;
     -i|--image)
     CONTAINER_IMAGE="$2"
-    shift # past argument
+    shift
     ;;
     -p|--port)
     SERVER_PORT="$2"
-    shift # past argument
+    shift
     ;;
     -c|--cpu-count)
     MC_CPU_COUNT="$2"
-    shift # past argument
+    shift
     ;;
     -im|--init-memory)
     MC_INIT_MEMORY="$2"
-    shift # past argument
+    shift
     ;;
     -mm|--max-memory)
     MC_MAX_MEMORY="$2"
-    shift # past argument
+    shift
     ;;
     --s3-key)
     S3_ACCESS_KEY="$2"
@@ -70,7 +74,7 @@ case ${key} in
     # unknown option
     ;;
 esac
-shift # past argument or value
+shift or value
 done
 
 function usage {
@@ -122,7 +126,7 @@ done
 docker run -d --restart=always \
 --name=${SERVER_NAME} \
 --link=${SERVER_NAME}"_mysql:db" \
--e MINECRAFT_AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL} \
+-e MINECRAFT_AUTH_SERVER_URL=${AUTH_SERVER_URL} \
 -e MC_CPU_COUNT=${MC_CPU_COUNT} \
 -e MC_INIT_MEMORY=${MC_INIT_MEMORY} \
 -e MC_MAX_MEMORY=${MC_MAX_MEMORY} \
