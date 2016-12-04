@@ -5,11 +5,6 @@ SERVER_PORT="25565"
 BACKUP_INTERVAL="360" # Every 6 h
 AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL-"http://localhost"}
 
-if [ "$(id -u)" != "0" ]; then
-   echo "This script must be run as root" 1>&2
-   exit 1
-fi
-
 while [[ $# > 1 ]]
 do
 key="$1"
@@ -104,7 +99,13 @@ mkdir -p ${DATA_DIR}/scripts
 MC_HOME=/home/minecraft
 SERVER_HOME=/home/minecraft/server
 
-ROOT_PASS=$(echo ${SERVER_NAME} | md5sum | awk '{print $1}')
+if [[ -f /sbin/md5 ]]; then
+  MD5BIN=/sbin/md5
+else
+  MD5BIN=/usr/bin/md5sum
+fi
+
+ROOT_PASS=$(echo ${SERVER_NAME} | ${MD5BIN} | awk '{print $1}')
 if docker ps | grep "${SERVER_NAME}_mysql"; then
     MYSQL_ID=$(docker ps | grep "${SERVER_NAME}_mysql" | awk '{print $1}')
 else
