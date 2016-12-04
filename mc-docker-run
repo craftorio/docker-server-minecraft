@@ -74,7 +74,7 @@ case ${key} in
     # unknown option
     ;;
 esac
-shift or value
+shift
 done
 
 function usage {
