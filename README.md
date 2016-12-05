@@ -14,7 +14,7 @@
 
 ####  Run the server:
     
-    $ mc-docker-run --auth-server-url http://myfunnyserver.com --image mcstyle/server:1.7.10-1614-57-1 --name myfunnyserver --data /srv/minecraft-server/myfunnyserver --port 25565
+    $ mc-docker-run --auth-server-url http://myfunnyserver.com --image mcstyle/server:1.7.10-1614-57-1 --name myfunnyserver --data /srv/minecraft-myfunnyserver --port 25565
     
   or
     
