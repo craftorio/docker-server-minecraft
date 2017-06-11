@@ -55,6 +55,15 @@ is_running() {
 	if [ -f "$pidfile" ]
 	then
 		pid=$(head -1 $pidfile)
+		
+		if ! ps ax | grep -v grep | grep "${pid}" | grep "${SCREEN}" > /dev/null; then
+		  if ps aux | grep "${SCREEN}" | grep -v grep; then
+		    pid=$(ps aux | grep "${SCREEN}" | grep -v grep | awk '{print $2}')
+		    echo $pid > $pidfile
+        echo "Pid restored to $pid"
+		  fi
+    fi
+		
 		if ps ax | grep -v grep | grep "${pid}" | grep "${SCREEN}" > /dev/null
 		then
 			return 0
