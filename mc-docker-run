@@ -95,6 +95,7 @@ mkdir -p ${DATA_DIR}/config
 mkdir -p ${DATA_DIR}/config-server
 mkdir -p ${DATA_DIR}/logs
 mkdir -p ${DATA_DIR}/scripts
+mkdir -p ${DATA_DIR}/Flan
 
 MC_HOME=/home/minecraft
 SERVER_HOME=/home/minecraft/server
@@ -146,6 +147,7 @@ docker run -d --restart=always \
 -v ${DATA_DIR}/plugins:${SERVER_HOME}/plugins \
 -v ${DATA_DIR}/logs:${SERVER_HOME}/logs \
 -v ${DATA_DIR}/scripts:${SERVER_HOME}/scripts \
+-v ${DATA_DIR}/Flan:${SERVER_HOME}/Flan\
 -v ${DATA_DIR}/config:${SERVER_HOME}/config \
 -v ${DATA_DIR}/config-server:${SERVER_HOME}/config-server \
 -p ${SERVER_PORT}:25565 \
