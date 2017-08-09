@@ -53,11 +53,22 @@ fi
 
 crontab -l | { cat; echo "0 */6 * * * /home/minecraft/init/minecraft log-roll"; } | crontab -
 
+if [[ ! -f /home/minecraft/server/config-server/eula.txt ]]; then
+  /bin/bash /home/minecraft/init/minecraft start
+  sleep 15
+  /bin/bash /home/minecraft/init/minecraft stop
+  mv /home/minecraft/server/eula.txt /home/minecraft/server/config-server/eula.txt
+fi
+
+ln -s -f /home/minecraft/server/config-server/eula.txt /home/minecraft/server/eula.txt
+
+until grep eula=true /home/minecraft/server/eula.txt; do sleep 1; done
+
 # Check first run
-if [[ 0 -eq $(ls -A /home/minecraft/server/config-server | wc -l) ]]; then
+if [[ 0 -eq $(ls /home/minecraft/server/config-server | grep -v eula.txt | wc -l) ]]; then
     /bin/bash /home/minecraft/init/minecraft start
 
-    while [[ ! -f /home/minecraft/server/bukkit.yml ]] || [[ ! -f /home/minecraft/server/spigot.yml ]] || [[ ! -f /home/minecraft/server/cauldron.yml ]] || [[ ! -f /home/minecraft/server/thermos.yml ]] || [[ ! -f /home/minecraft/server/server.properties ]]
+    while [[ ! -f /home/minecraft/server/server.properties ]]
     do
         sleep 1
     done

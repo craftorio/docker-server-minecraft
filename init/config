@@ -14,7 +14,7 @@ USERNAME=${MC_USER-"minecraft"}
 MCPATH="/home/${USERNAME}/server"
 
 # Name of server jar (no need to change if you're running craftbukkit and vice versa)
-SERVICE=`basename $(find ${MCPATH} -maxdepth 1 -iname "kcauldron*.jar" -or -iname "thermos*.jar" | head -1)`
+SERVICE=`basename $(find ${MCPATH} -maxdepth 1 -iname "kcauldron*.jar" -or -iname "thermos*.jar" -or -iname "forge-*.jar" | head -1)`
 
 # Define the release of CraftBukkit to use (stable or unstable)
 CB_RELEASE="stable"
