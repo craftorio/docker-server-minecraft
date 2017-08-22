@@ -104,6 +104,7 @@ mkdir -p ${DATA_DIR}/crash-reports
 mkdir -p ${DATA_DIR}/dynmap
 mkdir -p ${DATA_DIR}/nucleus
 mkdir -p ${DATA_DIR}/Flan
+mkdir -p ${DATA_DIR}/luckperms
 
 MC_HOME=/home/minecraft
 SERVER_HOME=/home/minecraft/server
@@ -165,6 +166,7 @@ docker run -d --restart=always \
 -v ${DATA_DIR}/config:${SERVER_HOME}/config \
 -v ${DATA_DIR}/config-server:${SERVER_HOME}/config-server \
 -v ${DATA_DIR}/nucleus:${SERVER_HOME}/nucleus \
+-v ${DATA_DIR}/luckperms:${SERVER_HOME}/luckperms \
 -p ${SERVER_PORT}:25565 \
 ${DYNMAP_PORT_ARG} \
 ${CONTAINER_IMAGE}
