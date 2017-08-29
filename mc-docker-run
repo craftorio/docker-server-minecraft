@@ -3,8 +3,24 @@
 SERVER_NAME="mcserver"
 SERVER_PORT="25565"
 BACKUP_INTERVAL="360" # Every 6 h
-AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL-"http://localhost"}
-DYNMAP_PORT=""
+AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL-"http://auth.minecraft.style"}
+
+function info {
+    printf "\033[0;36m${1}\033[0m \n"
+}
+function note {
+    printf "\033[0;33m${1}\033[0m \n"
+}
+function success {
+    printf "\033[0;32m${1}\033[0m \n"
+}
+function warning {
+    printf "\033[0;95m${1}\033[0m \n"
+}
+function error {
+    printf "\033[0;31m${1}\033[0m \n"
+    exit 1
+}
 
 while [[ $# > 1 ]]
 do
@@ -77,34 +93,41 @@ shift
 done
 
 function usage {
-    echo "$0 "
+    info "$0 "
 }
 
-if [[ -z ${DATA_DIR} ]]; then
-    echo "Data dir path can't be empty string"
-    exit
-fi
+[[ -z "${DATA_DIR}" ]] && {
+  error "Required argument DATA_DIR not provided!"
+}
 
-if [[ -z ${SERVER_NAME} ]]; then
-    echo "Server name can't be empty string"
-    exit
-fi
+[[ -z "${SERVER_NAME}" ]] && {
+  error "Required argument SERVER_NAME not provided!"
+}
 
-mkdir -p ${DATA_DIR}/mcbackup
-mkdir -p ${DATA_DIR}/worlds
-mkdir -p ${DATA_DIR}/mods
-mkdir -p ${DATA_DIR}/plugins
-mkdir -p ${DATA_DIR}/logs
-mkdir -p ${DATA_DIR}/config
-mkdir -p ${DATA_DIR}/config-server
-mkdir -p ${DATA_DIR}/logs
-mkdir -p ${DATA_DIR}/scripts
-mkdir -p ${DATA_DIR}/schematics
-mkdir -p ${DATA_DIR}/crash-reports
-mkdir -p ${DATA_DIR}/dynmap
-mkdir -p ${DATA_DIR}/nucleus
-mkdir -p ${DATA_DIR}/Flan
-mkdir -p ${DATA_DIR}/luckperms
+[[ -z "${CONTAINER_IMAGE}" ]] && {
+  error "Required argument CONTAINER_IMAGE not provided!"
+}
+
+mkdir -p ${DATA_DIR}/mcbackup || exit 1
+mkdir -p ${DATA_DIR}/worlds || exit 1
+mkdir -p ${DATA_DIR}/mods || exit 1
+mkdir -p ${DATA_DIR}/plugins || exit 1
+mkdir -p ${DATA_DIR}/logs || exit 1
+mkdir -p ${DATA_DIR}/config || exit 1
+mkdir -p ${DATA_DIR}/config-server || exit 1
+mkdir -p ${DATA_DIR}/logs || exit 1
+mkdir -p ${DATA_DIR}/scripts || exit 1
+mkdir -p ${DATA_DIR}/schematics || exit 1
+mkdir -p ${DATA_DIR}/crash-reports || exit 1
+mkdir -p ${DATA_DIR}/dynmap || exit 1
+mkdir -p ${DATA_DIR}/nucleus || exit 1
+mkdir -p ${DATA_DIR}/Flan || exit 1
+mkdir -p ${DATA_DIR}/luckperms || exit 1
+
+[[ -f "${DATA_DIR}/config-server/eula.txt" ]] || {
+  warning "Looks like the first run, don't forget to confirm EULA in ${DATA_DIR}/config-server/eula.txt"
+  sleep 5
+}
 
 MC_HOME=/home/minecraft
 SERVER_HOME=/home/minecraft/server
@@ -129,8 +152,8 @@ else
     percona:5.5)
 fi
 
-until docker exec ${MYSQL_ID} timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3306"; do
-    echo "Waiting database..."
+note "Waiting database..."
+until docker exec ${MYSQL_ID} timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3306" > /dev/null; do
     sleep 3
 done
 
@@ -138,6 +161,19 @@ DYNMAP_PORT_ARG=""
 if [[ ! -z "${DYNMAP_PORT}" ]]; then
   DYNMAP_PORT_ARG="-p ${DYNMAP_PORT}:8123"
 fi
+
+GOTTY_PORT_ARG=""
+if [[ ! -z "${GOTTY_PORT}" ]]; then
+  GOTTY_PORT_ARG="-p ${GOTTY_PORT}:8080"
+fi
+
+SSH_PORT_ARG=""
+if [[ ! -z "${SSH_PORT}" ]]; then
+  SSH_PORT_ARG="-p ${SSH_PORT}:22"
+fi
+
+SSH_PASS=${SSH_PASS-minecraft}
+
 docker run -d --restart=always \
 --name=${SERVER_NAME} \
 --link=${SERVER_NAME}"_mysql:db" \
@@ -153,6 +189,7 @@ docker run -d --restart=always \
 -e BACKBLAZE_ACCOUNT_ID=${BACKBLAZE_ACCOUNT_ID} \
 -e BACKBLAZE_APP_KEY=${BACKBLAZE_APP_KEY} \
 -e BACKBLAZE_BUCKET=${BACKBLAZE_BUCKET} \
+-e SSH_PASS=${SSH_PASS} \
 -v ${DATA_DIR}/mcbackup:${MC_HOME}/mcbackup \
 -v ${DATA_DIR}/dynmap:${SERVER_HOME}/dynmap \
 -v ${DATA_DIR}/worlds:${SERVER_HOME}/worlds \
@@ -169,4 +206,6 @@ docker run -d --restart=always \
 -v ${DATA_DIR}/luckperms:${SERVER_HOME}/luckperms \
 -p ${SERVER_PORT}:25565 \
 ${DYNMAP_PORT_ARG} \
+${GOTTY_PORT_ARG} \
+${SSH_PORT_ARG} \
 ${CONTAINER_IMAGE}

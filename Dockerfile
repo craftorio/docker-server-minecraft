@@ -3,12 +3,17 @@ ENV MC_RELEASE_TAG=1.10.2
 ENV S3CMD_RELEASE_TAG=1.6.1
 
 RUN adduser --disabled-password --gecos '' minecraft
+RUN apt-get update && apt-get install -y vim mc && apt-get clean
 
 COPY b2 /usr/local/bin/b2
+COPY gotty /usr/local/bin/gotty
+COPY gosu /usr/local/bin/gosu
 COPY runit/minecraft /etc/service/minecraft/run
+COPY runit/gotty /etc/service/gotty/run
+COPY runit/sshd /etc/service/sshd/run
 COPY init /home/minecraft/init
 COPY .s3cfg /home/minecraft/.s3cfg
-COPY authlib /home/minecraft/authlib
+COPY authlib/1.10.2 /home/minecraft/authlib
 COPY server/1.10.2 /home/minecraft/server
 
 RUN wget https://github.com/s3tools/s3cmd/releases/download/v${S3CMD_RELEASE_TAG}/s3cmd-${S3CMD_RELEASE_TAG}.zip \
@@ -20,6 +25,8 @@ RUN wget https://github.com/s3tools/s3cmd/releases/download/v${S3CMD_RELEASE_TAG
 
 RUN chmod +x /usr/local/bin/b2 \
 && chmod +x /etc/service/minecraft/run \
+&& chmod +x /etc/service/gotty/run \
+&& chmod +x /etc/service/sshd/run \
 && ln -s /home/minecraft/init/minecraft /usr/local/bin/minecraft \
 && chown minecraft:minecraft -R /home/minecraft/
 
@@ -48,4 +55,7 @@ VOLUME ["/home/minecraft/mcbackup", "/home/minecraft/server/dynmap", "/home/mine
 
 # 25565 - MineCraft Server Port
 # 8123 - Dynmap Plugin Port
-EXPOSE 25565 8123
+EXPOSE 25565 8123 8080 22
+
+# Enable sshd
+RUN rm -f /etc/service/sshd/down
