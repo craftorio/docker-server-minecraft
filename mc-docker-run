@@ -1,8 +1,8 @@
 #!/bin/bash
 
-SERVER_NAME="mcserver"
-SERVER_PORT="25565"
-BACKUP_INTERVAL="360" # Every 6 h
+SERVER_NAME=${SERVER_NAME-"minecraft-server"}
+SERVER_PORT=${SERVER_PORT-"25565"}
+BACKUP_INTERVAL=${BACKUP_INTERVAL-"360"} # Every 6 h
 AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL-"http://auth.minecraft.style"}
 
 function info {
@@ -108,6 +108,9 @@ function usage {
   error "Required argument CONTAINER_IMAGE not provided!"
 }
 
+mkdir -p ${DATA_DIR}
+cd ${DATA_DIR} && DATA_DIR=$(pwd) && cd - 
+
 mkdir -p ${DATA_DIR}/mcbackup || exit 1
 mkdir -p ${DATA_DIR}/worlds || exit 1
 mkdir -p ${DATA_DIR}/mods || exit 1
@@ -125,6 +128,7 @@ mkdir -p ${DATA_DIR}/Flan || exit 1
 mkdir -p ${DATA_DIR}/luckperms || exit 1
 
 [[ -f "${DATA_DIR}/config-server/eula.txt" ]] || {
+  echo "eula=false" > "${DATA_DIR}/config-server/eula.txt"
   warning "Looks like the first run, don't forget to confirm EULA in ${DATA_DIR}/config-server/eula.txt"
   sleep 5
 }

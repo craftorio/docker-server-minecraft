@@ -1,6 +1,7 @@
 FROM mcstyle/ubuntu
-ENV MC_RELEASE_TAG=1.10.2
-ENV S3CMD_RELEASE_TAG=1.6.1
+ARG MC_RELEASE_TAG=1.10.2
+ARG MC_SERVER_TAG=1.10.2
+ARG S3CMD_RELEASE_TAG=1.6.1
 
 RUN adduser --disabled-password --gecos '' minecraft
 RUN apt-get update && apt-get install -y vim mc && apt-get clean
@@ -13,8 +14,8 @@ COPY runit/gotty /etc/service/gotty/run
 COPY runit/sshd /etc/service/sshd/run
 COPY init /home/minecraft/init
 COPY .s3cfg /home/minecraft/.s3cfg
-COPY authlib/1.10.2 /home/minecraft/authlib
-COPY server/1.10.2 /home/minecraft/server
+COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
+COPY server/$MC_SERVER_TAG /home/minecraft/server
 
 RUN wget https://github.com/s3tools/s3cmd/releases/download/v${S3CMD_RELEASE_TAG}/s3cmd-${S3CMD_RELEASE_TAG}.zip \
 -O /opt/s3cmd-${S3CMD_RELEASE_TAG}.zip \
@@ -32,6 +33,7 @@ RUN chmod +x /usr/local/bin/b2 \
 
 USER minecraft
 
+RUN unzip /home/minecraft/server/libraries.zip -d /home/minecraft/server/
 
 RUN cd /home/minecraft/authlib \
 && zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
