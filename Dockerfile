@@ -53,7 +53,7 @@ RUN mkdir -p /home/minecraft/mcbackup \
 
 USER root
 
-VOLUME ["/home/minecraft/mcbackup", "/home/minecraft/server/dynmap", "/home/minecraft/server/worlds", "/home/minecraft/server/plugins", "/home/minecraft/server/mods", "/home/minecraft/server/config", "/home/minecraft/server/logs", "/home/minecraft/server/config-server", "/home/minecraft/scripts", "/home/minecraft/Flan"]
+VOLUME ["/home/minecraft/mcbackup", "/home/minecraft/server/dynmap", "/home/minecraft/server/worlds", "/home/minecraft/server/plugins", "/home/minecraft/server/mods", "/home/minecraft/server/config", "/home/minecraft/server/logs", "/home/minecraft/server/config-server", "/home/minecraft/server/scripts", "/home/minecraft/server/Flan"]
 
 # 25565 - MineCraft Server Port
 # 8123 - Dynmap Plugin Port
