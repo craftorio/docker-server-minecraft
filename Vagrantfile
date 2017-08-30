@@ -53,6 +53,8 @@ Vagrant.configure(2) do |config|
     v.cpus = 2
     
     #override.vm.provision :shell, :inline => "grep -q 'swapfile' /etc/fstab || fallocate -l 2048M /swapfile &&  chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile && echo '/swapfile none swap defaults 0 0' >> /etc/fstab"
-    override.vm.provision :shell, :inline => "cp /vagrant/mc-docker-run /usr/local/bin/mc-docker-run && chmod +x /usr/local/bin/mc-docker-run"
+    override.vm.provision :shell, :inline => "apt-get update && apt-get -y upgrade && apt-get -y install vim mc"
+    override.vm.provision :shell, :inline => "ln -s /vagrant/mc-docker-run /usr/local/bin/mc-docker-run && chmod +x /usr/local/bin/mc-docker-run"
+    override.vm.provision :shell, :inline => "adduser --disabled-password --gecos '' minecraft && usermod -G sudo,docker minecraft"
   end
 end
