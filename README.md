@@ -40,9 +40,9 @@ Run docker containers
     $ export CONTAINER_IMAGE="minecraft-server:1.10.2""
     $ mc-docker-run -d ~/minecraft-server/myfunnyserver -n myfunnyserver -p 25565
     
-Define memory limit and cpu count at run
+Define init and max memory, and cpu count at run
 
-    $ MC_CPU_COUNT=2 MC_MAX_MEMORY=5096M MC_INIT_MEMORY=2048M mc-docker-run -d ~/minecraft-server/myfunnyserver -n myfunnyserver -p 25565
+    $ MC_CPU_COUNT=2 MC_MAX_MEMORY=4096M MC_INIT_MEMORY=2048M mc-docker-run -d ~/minecraft-server/myfunnyserver -n myfunnyserver -p 25565
 
 #### Connect to MineCraft screen (console)
  
