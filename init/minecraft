@@ -103,12 +103,12 @@ datepath() {
 	# $2 file ending to check for uniqueness
 	# $3 file ending to return
 
-	if [ -e $1`date +%F`$2 ]
-	then
+	#if [ -e $1`date +%F`$2 ]
+	#then
 		echo $1`date +%FT%T`$3
-	else
-		echo $1`date +%F`$3
-	fi
+	#else
+	#	echo $1`date +%F`$3
+	#fi
 }
 
 mc_start() {
