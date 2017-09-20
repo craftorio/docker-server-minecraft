@@ -145,7 +145,7 @@ else
   MD5BIN=/usr/bin/md5sum
 fi
 
-[[ !-z "$WITH_MYSQL" ]] && {
+[[ ! -z "$WITH_MYSQL" ]] && {
   ROOT_PASS=$(echo ${SERVER_NAME} | ${MD5BIN} | awk '{print $1}')
   if docker ps | grep "${SERVER_NAME}_mysql"; then
       MYSQL_ID=$(docker ps | grep "${SERVER_NAME}_mysql" | awk '{print $1}')
