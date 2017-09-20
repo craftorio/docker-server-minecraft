@@ -85,6 +85,9 @@ case ${key} in
     --backup-interval)
     BACKUP_INTERVAL="$2"
     ;;
+    --with-mysql)
+    WITH_MYSQL="$2"
+    ;;
     *)
     # unknown option
     ;;
@@ -142,24 +145,28 @@ else
   MD5BIN=/usr/bin/md5sum
 fi
 
-ROOT_PASS=$(echo ${SERVER_NAME} | ${MD5BIN} | awk '{print $1}')
-if docker ps | grep "${SERVER_NAME}_mysql"; then
-    MYSQL_ID=$(docker ps | grep "${SERVER_NAME}_mysql" | awk '{print $1}')
-else
-    MYSQL_ID=$(docker run -d --restart=always \
-    --name="${SERVER_NAME}_mysql" \
-    -v ${DATA_DIR}/mysql:/var/lib/mysql \
-    -e MYSQL_ROOT_PASSWORD=${ROOT_PASS} \
-    -e MYSQL_USER=minecraft \
-    -e MYSQL_PASSWORD=minecraft \
-    -e MYSQL_DATABASE=minecraft \
-    percona:5.5)
-fi
-
-note "Waiting database..."
-until docker exec ${MYSQL_ID} timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3306" > /dev/null; do
-    sleep 3
-done
+[[ !-z "$WITH_MYSQL" ]] && {
+  ROOT_PASS=$(echo ${SERVER_NAME} | ${MD5BIN} | awk '{print $1}')
+  if docker ps | grep "${SERVER_NAME}_mysql"; then
+      MYSQL_ID=$(docker ps | grep "${SERVER_NAME}_mysql" | awk '{print $1}')
+  else
+      MYSQL_ID=$(docker run -d --restart=always \
+      --name="${SERVER_NAME}_mysql" \
+      -v ${DATA_DIR}/mysql:/var/lib/mysql \
+      -e MYSQL_ROOT_PASSWORD=${ROOT_PASS} \
+      -e MYSQL_USER=minecraft \
+      -e MYSQL_PASSWORD=minecraft \
+      -e MYSQL_DATABASE=minecraft \
+      percona:5.5)
+  fi
+  
+  note "Waiting database..."
+  until docker exec ${MYSQL_ID} timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3306" > /dev/null; do
+      sleep 3
+  done
+  
+  WITH_MYSQL_LINK_ARG="--link=${SERVER_NAME}_mysql:db"
+}
 
 DYNMAP_PORT_ARG=""
 if [[ ! -z "${DYNMAP_PORT}" ]]; then
@@ -179,8 +186,7 @@ fi
 SSH_PASS=${SSH_PASS-minecraft}
 
 docker run -d --restart=always \
---name=${SERVER_NAME} \
---link=${SERVER_NAME}"_mysql:db" \
+--name=${SERVER_NAME} ${WITH_MYSQL_LINK_ARG} \
 -e MINECRAFT_AUTH_SERVER_URL=${AUTH_SERVER_URL} \
 -e MC_CPU_COUNT=${MC_CPU_COUNT} \
 -e MC_INIT_MEMORY=${MC_INIT_MEMORY} \
