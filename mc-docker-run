@@ -129,6 +129,7 @@ mkdir -p ${DATA_DIR}/dynmap || exit 1
 mkdir -p ${DATA_DIR}/nucleus || exit 1
 mkdir -p ${DATA_DIR}/Flan || exit 1
 mkdir -p ${DATA_DIR}/luckperms || exit 1
+mkdir -p ${DATA_DIR}/orespawn || exit 1
 
 [[ -f "${DATA_DIR}/config-server/eula.txt" ]] || {
   echo "eula=false" > "${DATA_DIR}/config-server/eula.txt"
@@ -215,6 +216,7 @@ docker run -d --restart=always \
 -v ${DATA_DIR}/config-server:${SERVER_HOME}/config-server \
 -v ${DATA_DIR}/nucleus:${SERVER_HOME}/nucleus \
 -v ${DATA_DIR}/luckperms:${SERVER_HOME}/luckperms \
+-v ${DATA_DIR}/orespawn:${SERVER_HOME}/orespawn \
 -p ${SERVER_PORT}:25565 \
 ${DYNMAP_PORT_ARG} \
 ${GOTTY_PORT_ARG} \
