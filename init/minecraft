@@ -410,6 +410,7 @@ mc_world_backup() {
 			_UPLOADCMD=${_UPLOADCMD//%REMOTEPATH%/${_REMOTEPATH}}
 
 			as_user "${_UPLOADCMD}"
+			as_user "rm ${path}"
 		fi
 	done
 }
