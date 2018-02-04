@@ -273,7 +273,7 @@ check_backup_settings() {
 			S3CFG=$(echo "$S3CFG" | sed -e "s/bucket_location =.*/bucket_location = ${S3_REGION}/g")
 			echo "$S3CFG" > /home/${USERNAME}/.s3cfg
 
-			UPLOADCMD="s3cmd -c /home/${USERNAME}/.s3cfg put %LOCALPATH% s3://${S3_BUCKET}/%REMOTEPATH%"
+			UPLOADCMD="s3cmd --storage-class=STANDARD_IA -c /home/${USERNAME}/.s3cfg put %LOCALPATH% s3://${S3_BUCKET}/%REMOTEPATH%"
 			;;
 		*)
 			echo "$BACKUPFORMAT is not a supported backup format"
