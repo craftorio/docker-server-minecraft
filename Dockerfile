@@ -39,6 +39,7 @@ RUN java -jar /home/minecraft/forge/forge-*-installer.jar --installServer
 
 RUN cd /home/minecraft/authlib \
 && zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
+&& zip -ur /home/minecraft/server/libraries/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
 && cd -
 
 RUN mkdir -p \
