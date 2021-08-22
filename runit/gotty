@@ -1,0 +1,4 @@
+#!/bin/bash
+#set -x
+cd /home/minecraft
+/usr/local/bin/gosu minecraft /usr/local/bin/gotty -a 0.0.0.0 -p 8080 --credential "minecraft:${SSH_PASS}" --reconnect --once --permit-write /bin/bash

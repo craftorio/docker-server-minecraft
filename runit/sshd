@@ -1,0 +1,6 @@
+#!/bin/bash
+#set -x
+echo "Changing passsword for user minecraft"
+echo "minecraft:${SSH_PASS}" | chpasswd
+echo "Starting sshd"
+/usr/sbin/sshd -D
