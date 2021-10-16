@@ -37,10 +37,10 @@ USER minecraft
 WORKDIR /home/minecraft/server
 RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug
 
-RUN cd /home/minecraft/authlib \
-&& zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
-&& zip -ur /home/minecraft/server/libraries/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
-&& cd -
+#RUN cd /home/minecraft/authlib \
+#&& zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
+#&& zip -ur /home/minecraft/server/libraries/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
+#&& cd -
 
 RUN mkdir -p \
 /home/minecraft/mcbackup \
