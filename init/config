@@ -130,7 +130,7 @@ OVBACKUP="/home/${USERNAME}/mc-overviewer/overviewerbackups"
 # Things to leave alone ;)
 # =====================
 
-INVOCATION="java --illegal-access=warn -Xmx$MAXMEM -Xms$INITMEM -XX:G1HeapRegionSize=32M -XX:MaxGCPauseMillis=50  -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:+UnlockExperimentalVMOptions -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:ParallelGCThreads=$CPU_COUNT -jar $SERVICE nogui"
+INVOCATION="java --illegal-access=warn -Xmx$MAXMEM -Xms$INITMEM -XX:G1HeapRegionSize=32M -XX:MaxGCPauseMillis=50 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:+UnlockExperimentalVMOptions -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:ParallelGCThreads=$CPU_COUNT -javaagent:/home/minecraft/ultra-core-agent.jar -Dultra.core.config=/home/minecraft/ultra-core-agent-server.conf -jar $SERVICE nogui"
 
 # Path to the the mounted ramdisk (the default will work in most senarios).
 RAMDISK="/dev/shm"

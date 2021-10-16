@@ -4,8 +4,6 @@ ARG MC_SERVER_TAG=mohist-1.16.5-759
 ARG S3CMD_RELEASE_TAG=1.6.1
 
 RUN adduser --disabled-password --gecos '' minecraft
-RUN apt-get update && apt-get install -y vim mc && apt-get clean
-
 RUN wget https://github.com/s3tools/s3cmd/releases/download/v${S3CMD_RELEASE_TAG}/s3cmd-${S3CMD_RELEASE_TAG}.zip \
 -O /opt/s3cmd-${S3CMD_RELEASE_TAG}.zip \
 && unzip /opt/s3cmd-${S3CMD_RELEASE_TAG}.zip -d /opt/ \
@@ -24,6 +22,8 @@ COPY .s3cfg /home/minecraft/.s3cfg
 COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
 COPY forge/$MC_RELEASE_TAG /home/minecraft/forge
 COPY server/$MC_SERVER_TAG /home/minecraft/server
+COPY ultra-core-agent.jar /home/minecraft/ultra-core-agent.jar
+COPY ultra-core-agent-server.conf /home/minecraft/ultra-core-agent-server.conf
 
 RUN chmod +x /usr/local/bin/b2 \
 && chmod +x /etc/service/minecraft/run \
@@ -35,7 +35,7 @@ RUN chown minecraft:minecraft -R /home/minecraft
 
 USER minecraft
 WORKDIR /home/minecraft/server
-RUN java -jar /home/minecraft/forge/forge-*-installer.jar --installServer
+RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug
 
 RUN cd /home/minecraft/authlib \
 && zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
