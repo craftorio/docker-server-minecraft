@@ -1,4 +1,4 @@
-FROM craftorio/docker-ubuntu-java:openjdk-8-jre
+FROM craftorio/docker-ubuntu-java:openjdk-14-jre
 ARG MC_RELEASE_TAG=1.16.5
 ARG MC_SERVER_TAG=mohist-1.16.5-759
 ARG S3CMD_RELEASE_TAG=1.6.1

@@ -130,7 +130,16 @@ OVBACKUP="/home/${USERNAME}/mc-overviewer/overviewerbackups"
 # Things to leave alone ;)
 # =====================
 
-INVOCATION_EXTRA_ARGS="-javaagent:/home/minecraft/server/ultra-core-agent.jar -Dultra.core.config=/home/minecraft/server/ultra-core-agent-server.conf ";
+INVOCATION_EXTRA_ARGS="-Dultra.core.config=/home/minecraft/server/ultra-core-agent-server.conf ";
+
+java -version 2>&1 | awk '{ print $3 }' | head -1 | grep '14.\|16.' && {
+  INVOCATION_EXTRA_ARGS="-javaagent:/home/minecraft/server/ultra-core-agent-java14.jar  --illegal-access=warn"
+}
+
+java -version 2>&1 | awk '{ print $3 }' | head -1 | grep '1.8' && {
+  INVOCATION_EXTRA_ARGS="-javaagent:/home/minecraft/server/ultra-core-agent-java8.jar"
+}
+
 java -version 2>&1 | awk '{ print $3 }' | head -1 | grep '14.\|16.' && {
   INVOCATION_EXTRA_ARGS="--illegal-access=warn"
 }
