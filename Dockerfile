@@ -1,4 +1,4 @@
-FROM craftorio/docker-ubuntu-java:openjdk-14-jre
+FROM craftorio/docker-ubuntu-java:openjdk-8-jre
 ARG MC_RELEASE_TAG=1.16.5
 ARG MC_SERVER_TAG=mohist-1.16.5-759
 ARG S3CMD_RELEASE_TAG=1.6.1
@@ -19,7 +19,7 @@ COPY runit/gotty /etc/service/gotty/run
 COPY runit/sshd /etc/service/sshd/run
 COPY init /home/minecraft/init
 COPY .s3cfg /home/minecraft/.s3cfg
-COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
+#COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
 COPY forge/$MC_RELEASE_TAG /home/minecraft/forge
 COPY server/$MC_SERVER_TAG /home/minecraft/server
 COPY ultra-core-agent.jar /home/minecraft/ultra-core-agent.jar
