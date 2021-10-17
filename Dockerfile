@@ -22,8 +22,8 @@ COPY .s3cfg /home/minecraft/.s3cfg
 #COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
 COPY forge/$MC_RELEASE_TAG /home/minecraft/forge
 COPY server/$MC_SERVER_TAG /home/minecraft/server
-COPY ultra-core-agent.jar /home/minecraft/ultra-core-agent.jar
-COPY ultra-core-agent-server.conf /home/minecraft/ultra-core-agent-server.conf
+COPY ultra-core-agent.jar /home/minecraft/server/ultra-core-agent.jar
+COPY ultra-core-agent-server.conf /home/minecraft/server/ultra-core-agent-server.conf
 
 RUN chmod +x /usr/local/bin/b2 \
 && chmod +x /etc/service/minecraft/run \
