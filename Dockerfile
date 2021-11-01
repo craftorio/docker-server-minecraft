@@ -63,8 +63,7 @@ VOLUME ["/home/minecraft/mcbackup", "/home/minecraft/server/dynmap", "/home/mine
 # 8123 - Dynmap Plugin Port
 EXPOSE 25565 8123 8080 22
 
-ENV JAVA_HOME=/usr/lib/jvm/jdk-14.0.2
-ENV PATH $PATH:$JAVA_HOME/bin
+RUN ln -s /usr/lib/jvm/jdk-14.0.2/bin/java /usr/local/bin/java
 
 # Enable sshd
 RUN rm -f /etc/service/sshd/down
