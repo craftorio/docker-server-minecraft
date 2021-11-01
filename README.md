@@ -15,7 +15,7 @@
 **1.16.5**
 
     # mohist-1.16.5-759
-    $ docker build --squash --build-arg MC_RELEASE_TAG=1.16.5 --build-arg MC_SERVER_TAG=mohist-1.16.5-759 -t craftorio/docker-server-minecraft:mohist-1.16.5-759 .
+    $ docker build --squash --build-arg MC_RELEASE_TAG=1.16.5 --build-arg MC_SERVER_TAG=mohist-1.16.5-845 -t craftorio/docker-server-minecraft:mohist-1.16.5-835 .
 
 
 **1.12.2**  
