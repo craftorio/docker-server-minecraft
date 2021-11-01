@@ -1,6 +1,6 @@
 FROM craftorio/docker-ubuntu-java:oraclejdk-14
 ARG MC_RELEASE_TAG=1.16.5
-ARG MC_SERVER_TAG=mohist-1.16.5-845
+ARG MC_SERVER_TAG=magma-1.16.5-36.2.8-977cc46
 ARG S3CMD_RELEASE_TAG=1.6.1
 
 RUN adduser --disabled-password --gecos '' minecraft
@@ -20,8 +20,7 @@ COPY runit/sshd /etc/service/sshd/run
 COPY init /home/minecraft/init
 COPY .s3cfg /home/minecraft/.s3cfg
 #COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
-COPY forge/$MC_RELEASE_TAG /home/minecraft/forge
-COPY magma/$MC_RELEASE_TAG /home/minecraft/magma
+#COPY forge/$MC_RELEASE_TAG /home/minecraft/forge
 COPY server/$MC_SERVER_TAG /home/minecraft/server
 COPY ultra-core-agent-java8.jar /home/minecraft/server/ultra-core-agent-java8.jar
 COPY ultra-core-agent-java14.jar /home/minecraft/server/ultra-core-agent-java14.jar
@@ -38,7 +37,7 @@ RUN chown minecraft:minecraft -R /home/minecraft
 USER minecraft
 WORKDIR /home/minecraft/server
 #RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug
-RUN java -jar /home/minecraft/magma/magma-*.jar --installServer
+RUN java -jar /home/minecraft/server/magma-*.jar --installServer
 
 #RUN cd /home/minecraft/authlib \
 #&& zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
