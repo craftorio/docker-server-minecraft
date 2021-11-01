@@ -21,6 +21,7 @@ COPY init /home/minecraft/init
 COPY .s3cfg /home/minecraft/.s3cfg
 #COPY authlib/$MC_RELEASE_TAG /home/minecraft/authlib
 COPY forge/$MC_RELEASE_TAG /home/minecraft/forge
+COPY magma/$MC_RELEASE_TAG /home/minecraft/magma
 COPY server/$MC_SERVER_TAG /home/minecraft/server
 COPY ultra-core-agent-java8.jar /home/minecraft/server/ultra-core-agent-java8.jar
 COPY ultra-core-agent-java14.jar /home/minecraft/server/ultra-core-agent-java14.jar
@@ -36,7 +37,8 @@ RUN chown minecraft:minecraft -R /home/minecraft
 
 USER minecraft
 WORKDIR /home/minecraft/server
-RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug
+#RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug
+RUN java -jar /home/minecraft/magma/magma-*.jar --installServer
 
 #RUN cd /home/minecraft/authlib \
 #&& zip -ur /home/minecraft/server/minecraft_server.${MC_RELEASE_TAG}.jar ./ \
