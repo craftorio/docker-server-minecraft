@@ -36,7 +36,8 @@ RUN chown minecraft:minecraft -R /home/minecraft
 
 USER minecraft
 WORKDIR /home/minecraft/server
-RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug
+RUN java -jar /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar --installServer --debug \
+    && rm /home/minecraft/forge/forge-${MC_RELEASE_TAG}-*-installer.jar
 RUN mkdir -p \
 /home/minecraft/mcbackup \
 /home/minecraft/server/worlds \
