@@ -20,11 +20,8 @@
 
 **1.12.2**  
 
-    # 2705  
-    $ docker build --build-arg MC_RELEASE_TAG=1.12.2 --build-arg MC_SERVER_TAG=1.12.2-2705 -t craftorio/docker-server-minecraft:1.12.2-2705 .
-    
-    # 2838
-    $ docker build --build-arg MC_RELEASE_TAG=1.12.2 --build-arg MC_SERVER_TAG=1.12.2-2838 -t craftorio/docker-server-minecraft:1.12.2-2838 .
+    # 2860
+    $ docker build --squash --build-arg MC_RELEASE_TAG=1.12.2 --build-arg MC_SERVER_TAG=1.12.2-2860 -t craftorio/docker-server-minecraft:1.12.2-2860 .
 
 **1.10.2**  
 
