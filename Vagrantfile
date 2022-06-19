@@ -48,7 +48,7 @@ Vagrant.configure(2) do |config|
 
   # Virtualbox provider
   config.vm.provider "virtualbox" do |v, override|
-    override.vm.box = "williamyeh/ubuntu-trusty64-docker"
+    override.vm.box = "kwilczynski/ubuntu-20.04-docker"
     v.memory = 2048
     v.cpus = 2
     
