@@ -132,6 +132,10 @@ OVBACKUP="/home/${USERNAME}/mc-overviewer/overviewerbackups"
 
 INVOCATION_EXTRA_ARGS="-Dultra.core.config=/home/minecraft/server/ultra-core-agent-server.conf ";
 
+java -version 2>&1 | awk '{ print $3 }' | head -1 | grep '17\.[0-9]\+\.[0-9]\+' && {
+  INVOCATION_EXTRA_ARGS="${INVOCATION_EXTRA_ARGS} -javaagent:/home/minecraft/server/ultra-core-agent-java17.jar -Xshare:off --illegal-access=warn"
+}
+
 java -version 2>&1 | awk '{ print $3 }' | head -1 | grep '14.\|16.' && {
   INVOCATION_EXTRA_ARGS="${INVOCATION_EXTRA_ARGS} -javaagent:/home/minecraft/server/ultra-core-agent-java14.jar -Xshare:off --illegal-access=warn"
 }
