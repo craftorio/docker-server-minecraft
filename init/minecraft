@@ -757,6 +757,7 @@ case "$1" in
 	backup)
 		# Backups world
 		if is_running; then
+			check_backup_settings
 			mc_say "Создается резервная копия мира."
 			mc_saveoff
 			to_disk
