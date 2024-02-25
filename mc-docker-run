@@ -1,9 +1,10 @@
 #!/bin/bash
 
-SERVER_NAME=${SERVER_NAME-"minecraft-server"}
-SERVER_PORT=${SERVER_PORT-"25565"}
-BACKUP_INTERVAL=${BACKUP_INTERVAL-"360"} # Every 6 h
-AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL-"https://auth.craftorio.com"}
+SERVER_NAME=${SERVER_NAME:-"minecraft-server"}
+SERVER_PORT=${SERVER_PORT:-"25565"}
+BACKUP_INTERVAL=${BACKUP_INTERVAL:-"360"} # Every 6 h
+MC_BACKUPFORMAT=${MC_BACKUPFORMAT:-"disabled"}
+AUTH_SERVER_URL=${MINECRAFT_AUTH_SERVER_URL:-"https://auth.craftorio.com"}
 
 function info {
     printf "\033[0;36m${1}\033[0m \n"

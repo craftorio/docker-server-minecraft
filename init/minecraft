@@ -276,7 +276,7 @@ check_backup_settings() {
 
 			UPLOADCMD="s3cmd --storage-class=ONEZONE_IA -c /home/${USERNAME}/.s3cfg put %LOCALPATH% s3://${S3_BUCKET}/%REMOTEPATH%"
 			;;
-    disabled)
+    	disabled)
 			echo "Backup is disabled"
 			exit 1
 			;;
